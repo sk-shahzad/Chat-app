@@ -52,14 +52,18 @@ def registerPage(request):
 
 @login_required(login_url='/login')
 def home(request):
-     chats = Message.objects.all()
+     users = User.objects.exclude(id=request.user.id)
+     sents = Message.objects.filter(sender=request.user)
+     
      if request.method == 'POST':
+        recipient_id = request.POST['recipient']
         content = request.POST['content']
-        chat = Message(sender=request.user, content=content)
+        recipient = User.objects.get(id=recipient_id)
+        chat = Message(sender=request.user, content=content, recipient=recipient)
         chat.save()
 
 
-     context = {'chats': chats}
+     context = {'sents': sents, 'users': users}
      return render(request, 'home.html', context)
 
 

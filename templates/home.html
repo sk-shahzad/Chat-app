@@ -7,19 +7,25 @@
 </style> 
 
 <div class="home-container">
-
+    
 <div>
     <h1>Chat App </h1>
     <form method="POST" action="">
         {% csrf_token %}
         <textarea name="content" placeholder="Enter Message here" rows="10" cols="30"></textarea> <br><br>
+        
+        <select name="recipient" id="recipient" required >
+            {% for user in users %}
+            <option value="{{user.id}}">{{user.username}}</option>
+            {% endfor %}
+        </select>
         <input type="Submit" value="Submit" />
     </form>
 </div>
 <div>
-{% for chat in chats %}
-<h3>{{chat.content}}</h3>
-<h5>@{{chat.sender}}</h5>
+{% for sent in sents %}
+<h3>{{sent.content}}</h3>
+<h5>@{{sent.sender}}</h5>
 <hr>
 {%endfor%}
 </div>
