@@ -5,6 +5,7 @@ from .models import Message
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 def loginPage(request):
     page = 'login'
@@ -52,8 +53,10 @@ def registerPage(request):
 
 @login_required(login_url='/login')
 def home(request):
+     user = request.user
      users = User.objects.exclude(id=request.user.id)
-     sents = Message.objects.filter(sender=request.user)
+     sents = Message.objects.filter(sender=user)
+     rec = Message.objects.filter(recipient=user)
      
      if request.method == 'POST':
         recipient_id = request.POST['recipient']
@@ -63,7 +66,7 @@ def home(request):
         chat.save()
 
 
-     context = {'sents': sents, 'users': users}
+     context = {'sents': sents, 'users': users, 'rec': rec}
      return render(request, 'home.html', context)
 
 

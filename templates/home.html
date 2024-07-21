@@ -2,9 +2,17 @@
 <style>
     .home-container{
         display: grid;
-        grid-template-columns: 3fr 3fr;
+        grid-template-columns: 3fr 3fr 3fr;
     }
 </style> 
+
+{% if messages %}
+    <ul class="messges">
+        {% for message in messages %}
+        <li>{{message}}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
 <div class="home-container">
     
@@ -23,9 +31,19 @@
     </form>
 </div>
 <div>
+    <h3>Sent Messages</h3>
 {% for sent in sents %}
 <h3>{{sent.content}}</h3>
-<h5>@{{sent.sender}}</h5>
+<h5>@{{sent.sender}} -   {{sent.created|timesince}}</h5>
+<hr>
+{%endfor%}
+</div>
+
+<div>
+    <h3>Recieved Messages</h3>
+    {% for r in rec %}
+<h3>{{r.content}}</h3>
+<h5>@{{r.sender}} -   {{r.created|timesince}}</h5>
 <hr>
 {%endfor%}
 </div>
