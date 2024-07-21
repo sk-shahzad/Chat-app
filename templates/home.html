@@ -1,2 +1,26 @@
 {% include 'navbar.html' %}
-<h1>Chat App </h1>
+<style>
+    .home-container{
+        display: grid;
+        grid-template-columns: 3fr 3fr;
+    }
+</style> 
+
+<div class="home-container">
+
+<div>
+    <h1>Chat App </h1>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <textarea name="content" placeholder="Enter Message here" rows="10" cols="30"></textarea> <br><br>
+        <input type="Submit" value="Submit" />
+    </form>
+</div>
+<div>
+{% for chat in chats %}
+<h3>{{chat.content}}</h3>
+<h5>@{{chat.sender}}</h5>
+<hr>
+{%endfor%}
+</div>
+</div>

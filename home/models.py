@@ -4,28 +4,17 @@ from django.contrib.auth.models import User
 from django.db.models.deletion import CASCADE
 
 
-class ChatRoom(models.Model):
-    host =  models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    name = models.CharField(max_length=200)
-    description = models.TextField(null=True, blank=True)
-    participants = models.ManyToManyField(User, related_name='participants', blank=True)
-    updated = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True)
+class Message(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    content = models.TextField()
+    updated = models.DateTimeField(auto_now=True, null=True)
+    created = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         ordering =  ['-updated', '-created']
 
     def __str__(self):
-        return self.name
-
-class Message(models.Model):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
-    chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, related_name='messages')
-    content = models.TextField()
-    timestamp = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return f'{self.sender.username}: {self.content[:20]}'
+        return f"Message from {self.sender}"
 
 
 
