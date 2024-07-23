@@ -12,7 +12,7 @@ class Message(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
-        ordering =  ['-updated', '-created']
+        ordering =  ['updated', 'created']
 
     def __str__(self):
         return f"Message from {self.sender} to {self.recipient}"

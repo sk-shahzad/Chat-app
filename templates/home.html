@@ -1,12 +1,83 @@
-{% include 'navbar.html' %}
-<style>
-    .home-container{
-        display: grid;
-        grid-template-columns: 3fr 3fr 3fr;
-    }
-</style> 
-
-{% if messages %}
+<html>
+<head>
+    {% include 'navbar.html' %}
+    <title>Your Messages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .messages {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        .message {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .message-content {
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+        }
+        .message.sent .message-content {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+        }
+        .message.received .message-content {
+            background-color: #fff;
+            align-self: flex-start;
+        }
+        .timestamp {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 5px;
+        }
+        .chat-input {
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 10px;
+        }
+        .chat-input textarea {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            resize: none;
+        }
+        .chat-input select {
+            margin-left: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .chat-input button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #25d366;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+        .chat-input button:hover {
+            background-color: #22c35e;
+        }
+    </style>
+</head>
+<body>
+    {% if messages %}
     <ul class="messges">
         {% for message in messages %}
         <li>{{message}}</li>
@@ -14,37 +85,43 @@
     </ul>
     {% endif %}
 
-<div class="home-container">
-    
-<div>
-    <h1>Chat App </h1>
-    <form method="POST" action="">
-        {% csrf_token %}
-        <textarea name="content" placeholder="Enter Message here" rows="10" cols="30"></textarea> <br><br>
-        
-        <select name="recipient" id="recipient" required >
-            {% for user in users %}
-            <option value="{{user.id}}">{{user.username}}</option>
+   
+    <div class="chat-container">
+        <h1>Your Messages</h1><hr>
+        <div class="messages">
+            {% for msg in msgs %}
+                <div class="message {% if msg.sender == user %}sent{% else %}received{% endif %}">
+                    <div class="message-content">
+                        <div class="timestamp">@ {{msg.sender}}</div>
+                        <p id="write-message">{{ msg.content }}</p>
+                        <div class="timestamp">{{ msg.created }}</div>
+                    </div>
+                </div>
             {% endfor %}
-        </select>
-        <input type="Submit" value="Submit" />
-    </form>
-</div>
-<div>
-    <h3>Sent Messages</h3>
-{% for sent in sents %}
-<h3>{{sent.content}}</h3>
-<h5>@{{sent.sender}} -   {{sent.created|timesince}}</h5>
-<hr>
-{%endfor%}
-</div>
+        </div>
 
-<div>
-    <h3>Recieved Messages</h3>
-    {% for r in rec %}
-<h3>{{r.content}}</h3>
-<h5>@{{r.sender}} -   {{r.created|timesince}}</h5>
-<hr>
-{%endfor%}
-</div>
-</div>
+        <form method="POST" action="" class="chat-input">
+            {% csrf_token %}
+            <textarea name="content" placeholder="Enter Message here"  rows="1" ></textarea>
+            <div class="timestamp">Select recipient</div>
+            <select name="recipient" id="recipient" required >
+                {% for user in users %}
+                <option value="{{user.id}}"> {{user.username}}</option>
+                {% endfor %}
+            </select>
+            <button type="Submit" value="Submit">Send</button> 
+        </form>
+
+    </div>
+    </div>
+    <script>
+        window.onload = function() {
+    const elementId = "write-message"; // Replace with your specific element ID
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+    }
+};
+    </script>
+</body>
+</html>

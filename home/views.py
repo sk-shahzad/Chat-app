@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from .models import Message
+from django.db.models import Q
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -57,6 +58,7 @@ def home(request):
      users = User.objects.exclude(id=request.user.id)
      sents = Message.objects.filter(sender=user)
      rec = Message.objects.filter(recipient=user)
+     msgs = Message.objects.filter(Q(sender=user) | Q(recipient=user)).order_by('created')
      
      if request.method == 'POST':
         recipient_id = request.POST['recipient']
@@ -66,7 +68,7 @@ def home(request):
         chat.save()
 
 
-     context = {'sents': sents, 'users': users, 'rec': rec}
+     context = {'sents': sents, 'users': users, 'rec': rec, 'msgs': msgs}
      return render(request, 'home.html', context)
 
 

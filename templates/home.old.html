@@ -1,0 +1,59 @@
+{% include 'navbar.html' %}
+<style>
+    .home-container{
+        display: grid;
+        grid-template-columns: 3fr 3fr 3fr;
+    }
+</style> 
+
+{% if messages %}
+    <ul class="messges">
+        {% for message in messages %}
+        <li>{{message}}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+<div class="home-container">
+    
+<div>
+    <h1>Chat App </h1>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <textarea name="content" placeholder="Enter Message here" rows="10" cols="30"></textarea> <br><br>
+        
+        <select name="recipient" id="recipient" required >
+            {% for user in users %}
+            <option value="{{user.id}}">{{user.username}}</option>
+            {% endfor %}
+        </select>
+        <input type="Submit" value="Submit" />
+    </form>
+</div>
+<div>
+    <h3>Sent Messages</h3>
+{% for sent in sents %}
+<h5>@{{sent.sender}} -   {{sent.created|timesince}}</h5>
+<h3>{{sent.content}}</h3>
+<hr>
+{%endfor%}
+</div>
+
+<div style="color:blue;">
+    <h3>Recieved Messages</h3>
+    {% for r in rec %}
+<h5>@{{r.sender}} -   {{r.created|timesince}}</h5>
+<h3>{{r.content}}</h3>
+<hr>
+{%endfor%}
+</div>
+<div>
+{% for msg in msgs %}
+<div class="{% if msg.sender == request.user %}sent{% else %}received{%endif%}">
+    <p>{{msg.content}}</p>
+    <p>@{{msg.sender}}</p>
+    <hr>
+</div>
+</div>
+{%endfor%}
+</div>
